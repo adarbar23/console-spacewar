@@ -42,12 +42,6 @@ def init(): # line 10
 
     return
 
-def go(lineno):
-    return
-
-def gosub(lineno):
-    return
-
 def fire_missile(id): # line 700 and 800
     if (id == 1):
 	if (g.missile1y == 0):
@@ -59,7 +53,7 @@ def fire_missile(id): # line 700 and 800
     	    g.missile2x = g.player2x - 1
     return
 
-def ship(id, op):
+def ship(id, op): # line 600 and 650
     if (op == 1):
 	if (id == 1): 
 	    ship = ">=-"
@@ -72,7 +66,7 @@ def ship(id, op):
 
     return
 
-def ai():
+def ai(): # line 500
     r = random.randrange(0, 50) # todo: ?basic[fix(rnd*50)]
     if (r == 1 and g.player2y > g.miny):
 	ship(2, 0) 
@@ -85,24 +79,48 @@ def ai():
     
     return
 
-def process_missile(id):
-    # tbd	
+def process_missile(id): # line 750 and 850
+    # tbd
+    i = 1	
     return
 
-def score(): # line 900
+def win(): # line 900
+    if (g.player1score == 10):
+	message = "PLAYER ONE WINS!!!!"
+    else
+	message = "PLAYER TWO WINS!!!!"
+    printxy(7, 10, message)
+    printxy(9, 9, "Press 'C' to continue")
+
+    while getch() != "c":
+	pass
+
     return
 
-def lost(): #line 1000    
+def lose(): #line 1000    
+    if (g.playertoexplode == 1):
+	x = g.player1x + 1
+	y = g.player1y
+    else
+	x = g.player2x + 1
+	y = g.player2y
+    #if (i != 4): # magic number - max missiles?
+    #... -->
+	
+
     return
 
 def loop(): # line 300
     
-    if (g.player1score == 10 and g.playertoexplode == 0): score() 
-    if (g.player2score == 10 and g.playertoexplode == 0): score()
-    if (g.playertoexplode != 0): lost()
-    
-    print(g.player1y)
+    if (g.playertoexplode == 0 and \
+	(g.player1score == 10 or g.player2score == 10)): 
+	    win()
+	    return
 
+    if (g.playertoexplode != 0):
+	lose()
+	return()
+    
     ship(1, 1)
     ship(2, 1)
  
@@ -139,6 +157,7 @@ def main():
     g.missile2y = 0;  g.missile2x = 0
     g.player1score = 0; g.player2score = 0
     g.playertoexplode = 0
+    g.i = 0
 
     updatescores(g.player1score, g.player2score) # gosub 400
     
