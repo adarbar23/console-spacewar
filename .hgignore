@@ -5,4 +5,4 @@ syntax: glob
 *.bak
 *.bak2
 external/*
-
+.idea/**
