@@ -4,5 +4,6 @@ syntax: glob
 *.pyo
 *.bak
 *.bak2
+*.orig
 external/*
 .idea/**
