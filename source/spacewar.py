@@ -16,15 +16,31 @@ import random
 # todo: pylint
 # todo: doctests, other tests
 
-input_method = 0
+global MINY
+global MAXY
+global PLAYER1Y
+global PLAYER1X
+global MISSILE1Y
+global MISSILE1X
+global PLAYER2Y
+global PLAYER2X
+global MISSILE2Y
+global MISSILE2X
+global PLAYER1SCORE
+global PLAYER2SCORE
+global PLAYERTOEXPLODE
+global FRAME
+global INPUTMETHOD
+
+INPUTMETHOD = 0
 
 try:
     import readchar as key_input
-    input_method = 1
+    INPUTMETHOD = 1
 except ImportError:
     try:
         import msvcrt as key_input
-        input_method = 2
+        INPUTMETHOD = 2
     except ImportError:
         print "Readchar and Msvcrt libraries missing!"
         exit()
@@ -87,8 +103,7 @@ def updatescores(p1score, p2score):
     return
 
 
-def fire_missile(missile_nr, MISSILE1X, MISSILE1Y, \
-MISSILE2X, MISSILE2Y, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y,):
+def fire_missile(missile_nr, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y,):
     if missile_nr == 1:
         if MISSILE1Y == 0:
             MISSILE1Y = PLAYER1Y
@@ -120,7 +135,7 @@ def ship(ship_nr, operation, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y):
 
 
 def artificial_intelligence(PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, \
-MINY, MAXY, MISSILE1Y, MISSILE2Y):
+MINY, MAXY, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y):
     decision = random.randrange(1, 4)
     if decision == 1 and PLAYER2Y > MINY:
         ship(2, 0, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
@@ -215,41 +230,9 @@ FRAME, PLAYER1SCORE, PLAYER2SCORE, MINY, MAXY):
     PLAYER2Y = MAXY - 1
     return
 
-def init(PLAYER1SCORE, PLAYER1SCORE):
     
-    # variables should be set here?
-    cls()
-    printxy(5, 8, "S P A C E   W A R")
-    printxy(8, 2, "Keys: 'A' to go up")
-    printxy(9, 8, "'Z' to go down")
-    printxy(10, 8, "<space> to shoot")
-    printxy(13, 8, "First to 10 points wins")
-    printxy(16, 8, "Press <space> to start")
-    
-    while getch() != " ":
-        pass
-    cls()
-    updatescores(PLAYER1SCORE, PLAYER2SCORE)
-    return
-
-
 def main():
 
-    global MINY
-    global MAXY
-    global PLAYER1Y
-    global PLAYER1X
-    global MISSILE1Y
-    global MISSILE1X
-    global PLAYER2Y
-    global PLAYER2X
-    global MISSILE2Y
-    global MISSILE2X
-    global PLAYER1SCORE
-    global PLAYER2SCORE
-    global PLAYERTOEXPLODE
-    global FRAME
-    
     MINY = 3
     MAXY = 17
     PLAYER1Y = 5
@@ -265,7 +248,17 @@ def main():
     PLAYERTOEXPLODE = 0
     FRAME = 0
 
-    init()
+    cls()
+    printxy(5, 8, "S P A C E   W A R")
+    printxy(8, 2, "Keys: 'A' to go up")
+    printxy(9, 8, "'Z' to go down")
+    printxy(10, 8, "<space> to shoot")
+    printxy(13, 8, "First to 10 points wins")
+    printxy(16, 8, "Press <space> to start")
+    while getch() != " ":
+        pass
+    cls()
+    updatescores(PLAYER1SCORE, PLAYER2SCORE)
 
     while 1:
         # noone dies, someone wins
@@ -279,8 +272,8 @@ def main():
             PLAYER2Y, FRAME, PLAYER1SCORE, PLAYER2SCORE, MINY, MAXY)
             return
         # rewrite ships
-        ship(1, 1)
-        ship(2, 1)
+        ship(1, 1, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
+        ship(2, 1, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
         # rewrite missiles
         if MISSILE1X != 0:
             process_missile(1, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y, \
@@ -294,7 +287,7 @@ def main():
         # process user's control
         key = getch()
         if key == "a" and PLAYER1Y > MINY:
-            ship(1, 0)
+            ship(1, 0, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
             PLAYER1Y -= 1
         if key == "z" and PLAYER1Y < MAXY:
             ship(1, 0, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
@@ -308,7 +301,7 @@ def main():
             exit()
         # process ai's control
         artificial_intelligence(PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, \
-        MINY, MAXY, MISSILE1Y, MISSILE2Y)
+        MINY, MAXY, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y)
 
     return
 
