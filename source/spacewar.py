@@ -81,14 +81,14 @@ def printxy(ylocation, xlocation, text):  # todo: make platform-independent
     sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (ylocation, xlocation, text))
     sys.stdout.flush()
 
-def updatescores(PLAYER1SCORE, PLAYER1SCORE):
-    printxy(1, 2, "Player 1: %s" % PLAYER1SCORE)
-    printxy(1, 24, "Player 2: %s" % PLAYER1SCORE)
+def updatescores(p1score, p2score):
+    printxy(1, 2, "Player 1: %s" % p1score)
+    printxy(1, 24, "Player 2: %s" % p2score)
     return
 
 
-def fire_missile(missile_nr, MISSILE1Y, \
-MISSILE2Y, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y):
+def fire_missile(missile_nr, MISSILE1X, MISSILE1Y, \
+MISSILE2X, MISSILE2Y, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y,):
     if missile_nr == 1:
         if MISSILE1Y == 0:
             MISSILE1Y = PLAYER1Y
@@ -120,7 +120,7 @@ def ship(ship_nr, operation, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y):
 
 
 def artificial_intelligence(PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, \
-MINY, MAXY, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y):
+MINY, MAXY, MISSILE1Y, MISSILE2Y):
     decision = random.randrange(1, 4)
     if decision == 1 and PLAYER2Y > MINY:
         ship(2, 0, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
@@ -129,14 +129,15 @@ MINY, MAXY, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y):
         ship(2, 0, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
         PLAYER2Y += 1
     if decision == 3 or PLAYER1Y == PLAYER2Y:
-        fire_missile(2, MISSILE1Y, \
-        MISSILE2Y, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
+        fire_missile(2, MISSILE1X, MISSILE1Y, \
+        MISSILE2X, MISSILE2Y, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
         
     return
 
 
 def process_missile(missile_nr, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y, \
-PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y):
+PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, PLAYERTOEXPLODE, FRAME, PLAYER1SCORE):
+    FRAME = FRAME # FY pylint
     if missile_nr == 1:
         printxy(MISSILE1Y, MISSILE1X, " ")
         # missed, erase
@@ -209,7 +210,7 @@ FRAME, PLAYER1SCORE, PLAYER2SCORE, MINY, MAXY):
 
     PLAYERTOEXPLODE = 0
     cls()
-    updatescores(PLAYER1SCORE, PLAYER1SCORE)
+    updatescores(PLAYER1SCORE, PLAYER2SCORE)
     PLAYER1Y = MINY + 1
     PLAYER2Y = MAXY - 1
     return
@@ -228,13 +229,27 @@ def init(PLAYER1SCORE, PLAYER1SCORE):
     while getch() != " ":
         pass
     cls()
-    updatescores(PLAYER1SCORE, PLAYER1SCORE)
+    updatescores(PLAYER1SCORE, PLAYER2SCORE)
     return
 
 
-def main(PLAYER1SCORE, PLAYER1SCORE):
-    init()
+def main():
 
+    global MINY
+    global MAXY
+    global PLAYER1Y
+    global PLAYER1X
+    global MISSILE1Y
+    global MISSILE1X
+    global PLAYER2Y
+    global PLAYER2X
+    global MISSILE2Y
+    global MISSILE2X
+    global PLAYER1SCORE
+    global PLAYER2SCORE
+    global PLAYERTOEXPLODE
+    global FRAME
+    
     MINY = 3
     MAXY = 17
     PLAYER1Y = 5
@@ -249,6 +264,8 @@ def main(PLAYER1SCORE, PLAYER1SCORE):
     PLAYER2SCORE = 0
     PLAYERTOEXPLODE = 0
     FRAME = 0
+
+    init()
 
     while 1:
         # noone dies, someone wins
@@ -266,9 +283,14 @@ def main(PLAYER1SCORE, PLAYER1SCORE):
         ship(2, 1)
         # rewrite missiles
         if MISSILE1X != 0:
-            process_missile(1)
+            process_missile(1, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y, \
+            PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, PLAYERTOEXPLODE, \
+            FRAME, PLAYER1SCORE)
         if MISSILE2X != 0:
-            process_missile(2)
+            process_missile(2, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y, \
+            PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, PLAYERTOEXPLODE, FRAME, \
+            PLAYER1SCORE)
+
         # process user's control
         key = getch()
         if key == "a" and PLAYER1Y > MINY:
@@ -278,7 +300,7 @@ def main(PLAYER1SCORE, PLAYER1SCORE):
             ship(1, 0, PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
             PLAYER1Y += 1
         if key == " " or key == "j":  # todo: accept space
-            fire_missile(1, MISSILE1Y, MISSILE2Y, \
+            fire_missile(1, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y, \
             PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y)
             
         if key == "q":
@@ -286,7 +308,7 @@ def main(PLAYER1SCORE, PLAYER1SCORE):
             exit()
         # process ai's control
         artificial_intelligence(PLAYER1X, PLAYER1Y, PLAYER2X, PLAYER2Y, \
-        MINY, MAXY, MISSILE1X, MISSILE1Y, MISSILE2X, MISSILE2Y)
+        MINY, MAXY, MISSILE1Y, MISSILE2Y)
 
     return
 
