@@ -6,12 +6,6 @@ see the original gw-basic source at http://jsbasic.apphb.com/SpaceWar.htm
 author: bartoszgo; licence: free for any use
 """
 
-# todo: use http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
-# todo: make compatible with python 2 and 3
-# todo: oo
-# todo: pylint
-# todo: doctests, other tests
-
 import sys
 import random
 import readchar as keyinput
@@ -101,7 +95,10 @@ def fire_missile(missile_nr, missiles, players):
         if miss2y == 0:
             miss2y = pl2y
             miss2x = pl2x - 1
-    return miss1x, miss1y, miss2x, miss2y
+
+    missiles = [miss1x, miss1y, miss2x, miss2y]
+
+    return missiles
 
 
 def ship(ship_nr, operation, players):
@@ -143,7 +140,7 @@ def artificial_intelligence(players, bordery, missiles):
 
     [miss1x, miss1y, miss2x, miss2y] = missiles
 
-    decision = random.randrange(1, 4)
+    decision = random.randrange(1, 8)
 
     if decision == 1 and pl2y > miny:
         ship(2, 0, players)
@@ -153,14 +150,12 @@ def artificial_intelligence(players, bordery, missiles):
         pl2y += 1
     if decision == 3 or pl1y == pl2y:
         missiles = [miss1x, miss1y, miss2x, miss2y]
-        miss1x, miss1y, miss2x, miss2y = \
-            fire_missile(2, missiles, players)
+        missiles = fire_missile(2, missiles, players)
 
     # assert isinstance(pl2y, int)
-    return miss1x, miss1y, miss2x, miss2y, pl2y
+    return missiles, pl2y
 
 
-# todo: multiple returns with many parameters is dangerous, could differ
 def process_missile(missile_nr, missiles,
                     players, params):
     """
@@ -177,35 +172,34 @@ def process_missile(missile_nr, missiles,
     if missile_nr == 1:
         printxy(miss1y, miss1x, " ")
         # missed, erase
-        if miss1x == pl1x + 3:
+        if miss1x == (pl1x + 3):
             miss1y = miss1x = 0
-            return miss1x, miss1y, miss2x, miss2y, toexplode, myframe, pl1sc
-        miss1x += 1
-        printxy(miss1y, miss1x, ".")
-        # collision
-        if miss1y == pl2y and miss1x == pl2x:
-            miss1y = miss1x = 0
-            pl1sc += 1
-            toexplode = 2
-            myframe = 1
-        return miss1x, miss1y, miss2x, miss2y, toexplode, myframe, pl1sc
-
+	else:
+	    miss1x += 1
+    	    printxy(miss1y, miss1x, ".")
+    	    # collision
+    	    if (miss1y == pl2y) and (miss1x == pl2x):
+                miss1y = miss1x = 0
+                pl1sc += 1
+                toexplode = 2
+                myframe = 1
+        
     if missile_nr == 2:
         printxy(miss2y, miss2x, " ")
         # missed, erase
-        if miss2x == pl1x - 1:
+        if miss2x == (pl2x - 1):
             miss2y = miss2x = 0
-            return miss1x, miss1y, miss2x, miss2y, toexplode, myframe, pl1sc
-        miss2x -= 1
-        printxy(miss2y, miss2x, ".")
-        # collision
-        if miss2y == pl1y and pl1x <= \
-                miss2x < pl1x + 3:
-            miss2y = miss2x = 0
-            pl1sc += 1
-            toexplode = 1
-            myframe = 1
-    return miss1x, miss1y, miss2x, miss2y, toexplode, myframe, pl1sc
+	else:
+          miss2x -= 1
+          printxy(miss2y, miss2x, ".")
+          # collision
+          if (miss2y == pl1y) and (pl1x <= miss2x < (pl1x + 3)):
+              miss2y = miss2x = 0  
+              pl2sc += 1
+              toexplode = 1
+              myframe = 1
+    
+    return missiles, toexplode, myframe, pl1sc
 
 
 def win(pl1score):
@@ -227,7 +221,7 @@ def win(pl1score):
     return
 
 
-def lose(toexplode, myframe, players, params):
+def lose(toexplode, players, myframe, params):
     """
     :param toexplode:
     :param myframe:
@@ -335,18 +329,12 @@ def main():
             ship(1, 0, players)
             player1y += 1
         elif key == " " or key == "j":  # todo: accept space
-            #args = (1, missile1x, missile1y, missile2x, missile2y,
-            #        player1x, player1y, player2x, player2y)
-            missiles = [missile1x, missile1y, missile2x, missile2y]
-            missile1x, missile1y, missile2x, missile2y \
-                = fire_missile(1, missiles, players)
+            missiles = fire_missile(1, missiles, players)
         elif key == "q":
             cls()
             exit()
         # process ai's control
-        missiles = [missile1x, missile1y, missile2x, missile2y]
-        players = [player1x, player1y, player2x, player2y]
-        missile1x, missile1y, missile2x, missile2y, player2y = \
+        missiles, player2y = \
             artificial_intelligence(players, bordery, missiles)
     return player1x, player1y
 
