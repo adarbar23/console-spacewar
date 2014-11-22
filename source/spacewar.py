@@ -166,40 +166,46 @@ def process_missile(missile_nr, missiles,
     :param params:
     :return:
     """
-    [toexplode, myframe, pl1sc] = params
+    [toexplode, myframe, pl1sc, pl2sc] = params
     [miss1x, miss1y, miss2x, miss2y] = missiles
     [pl1x, pl1y, pl2x, pl2y] = players
     if missile_nr == 1:
         printxy(miss1y, miss1x, " ")
-        # missed, erase
         if miss1x == (pl1x + 3):
             miss1y = miss1x = 0
-	else:
-	    miss1x += 1
-    	    printxy(miss1y, miss1x, ".")
-    	    # collision
-    	    if (miss1y == pl2y) and (miss1x == pl2x):
+
+            missiles = [miss1x, miss1y, miss2x, miss2y]
+            return missiles, toexplode, myframe, pl1sc, pl2sc
+
+        else:
+            miss1x += 1
+            printxy(miss1y, miss1x, ".")
+            # collision
+            if (miss1y == pl2y) and (miss1x == pl2x):
                 miss1y = miss1x = 0
                 pl1sc += 1
                 toexplode = 2
                 myframe = 1
-        
+
+            missiles = [miss1x, miss1y, miss2x, miss2y]
+            return missiles, toexplode, myframe, pl1sc, pl2sc
+
     if missile_nr == 2:
         printxy(miss2y, miss2x, " ")
-        # missed, erase
         if miss2x == (pl2x - 1):
             miss2y = miss2x = 0
-	else:
-          miss2x -= 1
-          printxy(miss2y, miss2x, ".")
-          # collision
-          if (miss2y == pl1y) and (pl1x <= miss2x < (pl1x + 3)):
-              miss2y = miss2x = 0  
-              pl2sc += 1
-              toexplode = 1
-              myframe = 1
-    
-    return missiles, toexplode, myframe, pl1sc
+        else:
+            miss2x -= 1
+            printxy(miss2y, miss2x, ".")
+            # collision
+            if (miss2y == pl1y) and (pl1x <= miss2x < (pl1x + 3)):
+                miss2y = miss2x = 0
+                pl2sc += 1
+                toexplode = 1
+                myframe = 1
+
+    missiles = [miss1x, miss1y, miss2x, miss2y]
+    return missiles, toexplode, myframe, pl1sc, pl2sc
 
 
 def win(pl1score):
@@ -258,7 +264,6 @@ def lose(toexplode, players, myframe, params):
     return myframe, toexplode, pl1sc, pl2sc, pl1y, pl2y
 
 
-# todo: multiple returns with many parameters is dangerous, could differ
 def main():
     """
 
@@ -297,28 +302,27 @@ def main():
         if playertoexplode == 0 and \
                 (score[0] == 10 or score[1] == 10):
             win(score[0])
-            return player1x, player1y
+            return  # player1x, player1y
         # someone dies
         if playertoexplode != 0:
             params = [score[0], score[1], bordery[0], bordery[1]]
             frame, playertoexplode, score[0], score[1], \
                 player1y, player2y = lose(playertoexplode, players, frame,
                                           params)
-            return player1x, player1y
+            return  # player1x, player1y
         # rewrite ships
         ship(1, 1, players)
         ship(2, 1, players)
         # rewrite missiles
-        params = [playertoexplode, frame, score[0]]
+        params = [playertoexplode, frame, score[0], score[1]]
         if missile1x != 0:
-            missile1x, missile1y, missile2x, missile2y, playertoexplode, frame,\
-                score[0] = process_missile(1, missiles,
-                                           players, params)
+            [missile1x, missile1y, missile2x, missile2y], playertoexplode, \
+                frame, score[0], score[1] = process_missile(1, missiles,
+                                                            players, params)
         if missile2x != 0:
-            missile1x, missile1y, missile2x, missile2y, playertoexplode, \
-                frame, score[0] = process_missile(2, missiles,
-                                                  players,
-                                                  params)
+            [missile1x, missile1y, missile2x, missile2y], playertoexplode, \
+                frame, score[0], score[1] = process_missile(2, missiles,
+                                                            players, params)
 
         # process user's control
         key = getch()
@@ -336,7 +340,7 @@ def main():
         # process ai's control
         missiles, player2y = \
             artificial_intelligence(players, bordery, missiles)
-    return player1x, player1y
+    return  # player1x, player1y
 
 
 if __name__ == '__main__':
