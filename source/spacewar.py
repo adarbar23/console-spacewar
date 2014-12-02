@@ -155,7 +155,34 @@ def artificial_intelligence(players, bordery, missiles):
 
     # assert isinstance(pl2y, int)
     return missiles, pl2y
+"""
+750 rem Process player one's missile
+752 locate missile1y$, missile1x$
+753 print " "
+755 if missile1x$ = player2x$ + 3 then missile1y$ = 0 : missile1x$ = 0 : return
+757 missile1x$ = missile1x$ + 1
+760 locate missile1y$, missile1x$
+770 print "."
+780 if missile1y$ = player2y$ and missile1x$ = player2x$ then missile1y$ = 0 : missile1x$ = 0 : player1Score$ = player1Score$ + 1 : playerToExplode$ = 2 : i$ = 1
+790 return
 
+800 rem initialise player two's missile
+810 if missile2y$ <> 0 then return
+820 missile2y$ = player2y$
+830 missile2x$ = player2x$ - 1
+840 return
+
+850 rem Process player two's missile
+852 locate missile2y$, missile2x$
+853 print " "
+855 if missile2x$ = player1x$ - 1 then missile2y$ = 0 : missile2x$ = 0 : return
+857 missile2x$ = missile2x$ - 1
+860 locate missile2y$, missile2x$
+870 print "."
+880 if missile2y$ = player1y$ and missile2x$ >= player1x$ and missile2x$ < player1x$ + 3 then missile2y$ = 0 : missile2x$ = 0 : player2Score$ = player2Score$ + 1 : playerToExplode$ = 1 : i$ = 1
+890 return
+
+"""
 
 def process_missile(missile_nr, missiles,
                     players, params):
