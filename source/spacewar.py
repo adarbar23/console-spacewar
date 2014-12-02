@@ -8,22 +8,20 @@ author: bartoszgo; licence: free for any use
 
 import sys
 import random
-import readchar as keyinput
+#import readchar as keyinput
 
-# INPUTMETHOD = 0
-# try:
-#     import readchar as keyinput
-#
-#     INPUTMETHOD = 1
-# except ImportError:
-#     try:
-#         import msvcrt as keyinput
-#
-#         INPUTMETHOD = 2
-#     except ImportError:
-#         import None as key_input
-#         print "Readchar and Msvcrt libraries missing!"
-#         exit()
+INPUTMETHOD = 0
+try:
+    import readchar
+    INPUTMETHOD = 1
+
+except ImportError:
+    try:
+        import msvcrt
+        INPUTMETHOD = 2
+    except ImportError:
+        print "Readchar and Msvcrt libraries missing!"
+        exit()
 
 
 # ----------
@@ -33,8 +31,11 @@ def getch():  # todo: make platform-independent
 
     :return:
     """
-    return keyinput.readkey()
-
+    if INPUTMETHOD == 1:
+        return readchar.readkey()
+    elif INPUTMETHOD == 2:
+        return msvcrt.getch()
+    
 
 def cls():  # todo: make platform-independent
     """
