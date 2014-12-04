@@ -174,7 +174,7 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
     if missile_nr == 1:
 
         printxy(miss1y, miss1x, " ")
-        if miss1x == (pl1x + 3):
+        if miss1x == (pl2x + 3):
 
             miss1y = 0
             miss1x = 0
@@ -184,7 +184,7 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
 
         else:
 
-            print missile_nr, miss1x, miss1y, miss2x, miss2y
+            #print missile_nr, miss1x, miss1y, miss2x, miss2y
 
             miss1x += 1
             printxy(miss1y, miss1x, ".")
@@ -201,7 +201,7 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
 
     if missile_nr == 2:
         printxy(miss2y, miss2x, " ")
-        if miss2x == (pl2x - 1):
+        if miss2x == (pl1x - 1):
             miss2y = 0
             miss2x = 0
         else:
