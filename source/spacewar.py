@@ -137,7 +137,7 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
                 miss1y = 0
                 miss1x = 0
                 score1 += 1
-                toexplode = 2
+                playertoexplode1 = 2
                 myframe = 1
 
     if missile_nr == 2:
@@ -153,7 +153,7 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
                 miss2y = 0
                 miss2x = 0
                 score2 += 1
-                toexplode = 1
+                playertoexplode1 = 1
                 myframe = 1
 
     missiles = [miss1x, miss1y, miss2x, miss2y]
@@ -174,8 +174,8 @@ def win(pl1score):
     return
 
 
-def lose(toexplode, players, myframe, params):
-    [pl1x, pl1y, pl2x, pl2y] = players
+def lose(toexplode, player1x, player1y, player2x, player2y, myframe, params):
+    [pl1x, pl1y, pl2x, pl2y] = [player1x, player1y, player2x, player2y]
     [pl1sc, pl2sc, miny, maxy] = params
     if toexplode == 1:
         current_x = pl1x + 1
@@ -240,7 +240,7 @@ def main():
         if playertoexplode != 0:
             params = [score[0], score[1], bordery[0], bordery[1]]
             frame, playertoexplode, score[0], score[1], \
-                player1y, player2y = lose(playertoexplode, players, frame,
+                player1y, player2y = lose(playertoexplode, player1x, player1y, player2x, player2y, frame,
                                           params)
             return  # player1x, player1y
         # rewrite ships
