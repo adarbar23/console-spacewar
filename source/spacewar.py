@@ -175,9 +175,8 @@ def win(pl1score):
     return
 
 
-def lose(toexplode, player1x, player1y, player2x, player2y, myframe, params):
-    [pl1x, pl1y, pl2x, pl2y] = [player1x, player1y, player2x, player2y]
-    [pl1sc, pl2sc, miny, maxy] = params
+def lose(toexplode, pl1x, pl1y, pl2x, pl2y, myframe, pl1sc, pl2sc, miny, maxy):
+
     if toexplode == 1:
         current_x = pl1x + 1
         current_y = pl1y
@@ -185,6 +184,7 @@ def lose(toexplode, player1x, player1y, player2x, player2y, myframe, params):
         current_x = pl2x + 1
         current_y = pl2y
 
+    # todo: review the original gw-basic algorithm of explosion, make this close to the original
     while myframe < 5:
         #if myframe != 4:  # magic number - penultimate explosion step?
         printxy(current_y - myframe, current_x, "*")
@@ -246,11 +246,10 @@ def main():
             return  # player1x, player1y
         # someone dies
         if playertoexplode != 0:
-            params = [score[0], score[1], bordery[0], bordery[1]]
             frame, playertoexplode, score[0], score[1], \
                 player1y, player2y = lose(playertoexplode, player1x, player1y, player2x, player2y, frame,
-                                          params)
-            return  # player1x, player1y
+                                          score[0], score[1], bordery[0], bordery[1])
+            #return  # player1x, player1y
         # rewrite ships
         ship(1, 1, player1x, player1y, player2x, player2y)
         ship(2, 1, player1x, player1y, player2x, player2y)
