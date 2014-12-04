@@ -23,13 +23,30 @@ except ImportError:
         exit()
 
 
-# ----------
+# http://forums.xkcd.com/viewtopic.php?f=11&t=99890
+# the best solution seems to be pygame.
+# if not, try the below. and not sure if it works on windows.
+# ---
+# import thread, time
+#
+# def input_thread(L):
+#     raw_input()
+#     L.append(None)
+#
+# def do_print():
+#     L = []
+#     thread.start_new_thread(input_thread, (L,))
+#     while 1:
+#         time.sleep(.1)
+#         if L: break
+#         print "Hi Mom!"
+#
+# do_print()
+# --- or:
+# http://code.activestate.com/recipes/134892/
+
 
 def getch():  # todo: make platform-independent
-    """
-
-    :return:
-    """
     if INPUTMETHOD == 1:
         return readchar.readkey()
     elif INPUTMETHOD == 2:
@@ -37,55 +54,23 @@ def getch():  # todo: make platform-independent
     
 
 def cls():  # todo: make platform-independent
-    """
-    :rtype : object
-    :return:
-    """
     sys.stdout.write("\x1b7\x1b[2J\x1b8")
     return
 
 
-def fake(faked):
-    """
-    :param faked:
-    :return:
-    """
-    return faked
-
-
 def printxy(ylocation, xlocation, text):  # todo: make platform-independent
-    """
-
-    :param ylocation:
-    :param xlocation:
-    :param text:
-    :return:
-    """
     xlocation += 1  # border
     sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (ylocation, xlocation, text))
     sys.stdout.flush()
 
 
 def updatescores(p1score, p2score):
-    """
-
-    :rtype : None
-    """
     printxy(1, 2, "Player 1: %s" % p1score)
     printxy(1, 24, "Player 2: %s" % p2score)
     return
 
 
 def fire_missile(missile_nr, miss1x, miss1y, miss2x, miss2y, pl1x, pl1y, pl2x, pl2y):
-    """
-
-    :param missile_nr:
-    :param missiles:
-    :param players:
-    :return:
-    """
-    #[miss1x, miss1y, miss2x, miss2y] = missiles
-   # [pl1x, pl1y, pl2x, pl2y] = players
 
     if missile_nr == 1:
         if miss1y == 0:
@@ -97,19 +82,10 @@ def fire_missile(missile_nr, miss1x, miss1y, miss2x, miss2y, pl1x, pl1y, pl2x, p
             miss2y = pl2y
             miss2x = pl2x - 1
 
-    #missiles = [miss1x, miss1y, miss2x, miss2y]
-
     return miss1x, miss1y, miss2x, miss2y
 
 
 def ship(ship_nr, operation, pl1x, pl1y, pl2x, pl2y):
-    """
-    :param ship_nr:
-    :param operation:
-    :param players:
-    :return:
-    """
-    #[pl1x, pl1y, pl2x, pl2y] = players
     if operation == 1:
         if ship_nr == 1:
             pic = ">=-"
@@ -127,21 +103,9 @@ def ship(ship_nr, operation, pl1x, pl1y, pl2x, pl2y):
     return
 
 
-
 def artificial_intelligence(pl1x, pl1y, pl2x, pl2y, bordery, miss1x, miss1y, miss2x, miss2y):
-    """
-    :param players:
-    :param bordery:
-    :param missiles:
-    :return:
-    """
 
     [miny, maxy] = bordery
-    #pl1y = players[1]
-    #pl2y = players[3]
-
-    #[miss1x, miss1y, miss2x, miss2y] = missiles
-
     decision = random.randrange(1, 8)
 
     if decision == 1 and pl2y > miny:
@@ -151,41 +115,21 @@ def artificial_intelligence(pl1x, pl1y, pl2x, pl2y, bordery, miss1x, miss1y, mis
         ship(2, 0, pl1x, pl1y, pl2x, pl2y)
         pl2y += 1
     if decision == 3 or pl1y == pl2y:
-        #missiles = [miss1x, miss1y, miss2x, miss2y]
         [miss1x, miss1y, miss2x, miss2y] = fire_missile(2, miss1x, miss1y, miss2x, miss2y, pl1x, pl1y, pl2x, pl2y)
 
-    # assert isinstance(pl2y, int)
     return miss1x, miss1y, miss2x, miss2y, pl2y
 
 def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
                     pl1x, pl1y, pl2x, pl2y, playertoexplode1, frame1, score1, score2):
-    """
-
-    :param missile_nr:
-    :param missiles:
-    :param players:
-    :param params:
-    :return:
-    """
-    #[toexplode, myframe, pl1sc, pl2sc] = params
-    #[miss1x, miss1y, miss2x, miss2y] = missiles
-    #[pl1x, pl1y, pl2x, pl2y] = players
 
     if missile_nr == 1:
 
         printxy(miss1y, miss1x, " ")
         if miss1x == (pl2x + 3):
-
             miss1y = 0
             miss1x = 0
 
-            # missiles = [miss1x, miss1y, miss2x, miss2y]
-            # return missiles, toexplode, myframe, pl1sc, pl2sc
-
         else:
-
-            #print missile_nr, miss1x, miss1y, miss2x, miss2y
-
             miss1x += 1
             printxy(miss1y, miss1x, ".")
             # collision
@@ -195,9 +139,6 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
                 score1 += 1
                 toexplode = 2
                 myframe = 1
-
-            # missiles = [miss1x, miss1y, miss2x, miss2y]
-            # return missiles, toexplode, myframe, pl1sc, pl2sc
 
     if missile_nr == 2:
         printxy(miss2y, miss2x, " ")
@@ -220,11 +161,6 @@ def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
 
 
 def win(pl1score):
-    """
-
-    :param pl1score:
-    :return:
-    """
     if pl1score == 10:
         message = "PLAYER ONE WINS!!!!"
     else:
@@ -239,13 +175,6 @@ def win(pl1score):
 
 
 def lose(toexplode, players, myframe, params):
-    """
-    :param toexplode:
-    :param myframe:
-    :param players:
-    :param params:
-    :return:
-    """
     [pl1x, pl1y, pl2x, pl2y] = players
     [pl1sc, pl2sc, miny, maxy] = params
     if toexplode == 1:
@@ -262,7 +191,6 @@ def lose(toexplode, players, myframe, params):
         printxy(current_y + myframe, current_x + myframe, ".")
         printxy(current_y + myframe, current_x - myframe, ".")
     for j in range(1, 1000):  # todo: need to replace this with time delay
-        fake(j)  # look pylint, I'm smarter!
         printxy(current_y, current_x - myframe, '*' * (myframe * 2 + 1))
     myframe += 1
     if myframe >= 5:
@@ -276,10 +204,6 @@ def lose(toexplode, players, myframe, params):
 
 
 def main():
-    """
-
-    :return:
-    """
     bordery = [3, 17]
     player1y = 5
     player1x = 5
@@ -306,16 +230,7 @@ def main():
     cls()
     updatescores(score[0], score[1])
 
-    # todo: passing around players[] and missiles [] is ugly
-    #players = [player1x, player1y, player2x, player2y]
-    #missiles = [missile1x, missile1y, missile2x, missile2y]
-
     while 1:
-
-        #print players, missiles
-        #players = [player1x, player1y, player2x, player2y]
-        #missiles = [missile1x, missile1y, missile2x, missile2y]
-
         # noone dies, someone wins
         if playertoexplode == 0 and \
                 (score[0] == 10 or score[1] == 10):
@@ -332,7 +247,6 @@ def main():
         ship(1, 1, player1x, player1y, player2x, player2y)
         ship(2, 1, player1x, player1y, player2x, player2y)
         # rewrite missiles
-
 
         if missile1x != 0:
             [missile1x, missile1y, missile2x, missile2y], playertoexplode, \
@@ -359,8 +273,7 @@ def main():
         [missile1x, missile1y, missile2x, missile2y, player2y] = \
             artificial_intelligence(player1x, player1y, player2x, player2y, bordery, missile1x, missile1y, missile2x, missile2y)
 
-
-    return  # player1x, player1y
+    return
 
 
 if __name__ == '__main__':
