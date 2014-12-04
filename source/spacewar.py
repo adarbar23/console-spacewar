@@ -8,7 +8,6 @@ author: bartoszgo; licence: free for any use
 
 import sys
 import random
-#import readchar as keyinput
 
 INPUTMETHOD = 0
 try:
@@ -77,7 +76,7 @@ def updatescores(p1score, p2score):
     return
 
 
-def fire_missile(missile_nr, missiles, players):
+def fire_missile(missile_nr, miss1x, miss1y, miss2x, miss2y, pl1x, pl1y, pl2x, pl2y):
     """
 
     :param missile_nr:
@@ -85,31 +84,32 @@ def fire_missile(missile_nr, missiles, players):
     :param players:
     :return:
     """
-    [miss1x, miss1y, miss2x, miss2y] = missiles
-    [pl1x, pl1y, pl2x, pl2y] = players
+    #[miss1x, miss1y, miss2x, miss2y] = missiles
+   # [pl1x, pl1y, pl2x, pl2y] = players
 
     if missile_nr == 1:
         if miss1y == 0:
             miss1y = pl1y
             miss1x = pl1x + 3
+
     if missile_nr == 2:
         if miss2y == 0:
             miss2y = pl2y
             miss2x = pl2x - 1
 
-    missiles = [miss1x, miss1y, miss2x, miss2y]
+    #missiles = [miss1x, miss1y, miss2x, miss2y]
 
-    return missiles
+    return miss1x, miss1y, miss2x, miss2y
 
 
-def ship(ship_nr, operation, players):
+def ship(ship_nr, operation, pl1x, pl1y, pl2x, pl2y):
     """
     :param ship_nr:
     :param operation:
     :param players:
     :return:
     """
-    [pl1x, pl1y, pl2x, pl2y] = players
+    #[pl1x, pl1y, pl2x, pl2y] = players
     if operation == 1:
         if ship_nr == 1:
             pic = ">=-"
@@ -127,7 +127,8 @@ def ship(ship_nr, operation, players):
     return
 
 
-def artificial_intelligence(players, bordery, missiles):
+
+def artificial_intelligence(pl1x, pl1y, pl2x, pl2y, bordery, miss1x, miss1y, miss2x, miss2y):
     """
     :param players:
     :param bordery:
@@ -136,56 +137,28 @@ def artificial_intelligence(players, bordery, missiles):
     """
 
     [miny, maxy] = bordery
-    pl1y = players[1]
-    pl2y = players[3]
+    #pl1y = players[1]
+    #pl2y = players[3]
 
-    [miss1x, miss1y, miss2x, miss2y] = missiles
+    #[miss1x, miss1y, miss2x, miss2y] = missiles
 
     decision = random.randrange(1, 8)
 
     if decision == 1 and pl2y > miny:
-        ship(2, 0, players)
+        ship(2, 0, pl1x, pl1y, pl2x, pl2y)
         pl2y -= 1
     if decision == 2 and pl2y < maxy:
-        ship(2, 0, players)
+        ship(2, 0, pl1x, pl1y, pl2x, pl2y)
         pl2y += 1
     if decision == 3 or pl1y == pl2y:
-        missiles = [miss1x, miss1y, miss2x, miss2y]
-        missiles = fire_missile(2, missiles, players)
+        #missiles = [miss1x, miss1y, miss2x, miss2y]
+        [miss1x, miss1y, miss2x, miss2y] = fire_missile(2, miss1x, miss1y, miss2x, miss2y, pl1x, pl1y, pl2x, pl2y)
 
     # assert isinstance(pl2y, int)
-    return missiles, pl2y
-"""
-750 rem Process player one's missile
-752 locate missile1y$, missile1x$
-753 print " "
-755 if missile1x$ = player2x$ + 3 then missile1y$ = 0 : missile1x$ = 0 : return
-757 missile1x$ = missile1x$ + 1
-760 locate missile1y$, missile1x$
-770 print "."
-780 if missile1y$ = player2y$ and missile1x$ = player2x$ then missile1y$ = 0 : missile1x$ = 0 : player1Score$ = player1Score$ + 1 : playerToExplode$ = 2 : i$ = 1
-790 return
+    return miss1x, miss1y, miss2x, miss2y, pl2y
 
-800 rem initialise player two's missile
-810 if missile2y$ <> 0 then return
-820 missile2y$ = player2y$
-830 missile2x$ = player2x$ - 1
-840 return
-
-850 rem Process player two's missile
-852 locate missile2y$, missile2x$
-853 print " "
-855 if missile2x$ = player1x$ - 1 then missile2y$ = 0 : missile2x$ = 0 : return
-857 missile2x$ = missile2x$ - 1
-860 locate missile2y$, missile2x$
-870 print "."
-880 if missile2y$ = player1y$ and missile2x$ >= player1x$ and missile2x$ < player1x$ + 3 then missile2y$ = 0 : missile2x$ = 0 : player2Score$ = player2Score$ + 1 : playerToExplode$ = 1 : i$ = 1
-890 return
-
-"""
-
-def process_missile(missile_nr, missiles,
-                    players, params):
+def process_missile(missile_nr, miss1x, miss1y, miss2x, miss2y,
+                    pl1x, pl1y, pl2x, pl2y, playertoexplode1, frame1, score1, score2):
     """
 
     :param missile_nr:
@@ -194,46 +167,56 @@ def process_missile(missile_nr, missiles,
     :param params:
     :return:
     """
-    [toexplode, myframe, pl1sc, pl2sc] = params
-    [miss1x, miss1y, miss2x, miss2y] = missiles
-    [pl1x, pl1y, pl2x, pl2y] = players
+    #[toexplode, myframe, pl1sc, pl2sc] = params
+    #[miss1x, miss1y, miss2x, miss2y] = missiles
+    #[pl1x, pl1y, pl2x, pl2y] = players
+
     if missile_nr == 1:
+
         printxy(miss1y, miss1x, " ")
         if miss1x == (pl1x + 3):
-            miss1y = miss1x = 0
 
-            missiles = [miss1x, miss1y, miss2x, miss2y]
-            return missiles, toexplode, myframe, pl1sc, pl2sc
+            miss1y = 0
+            miss1x = 0
+
+            # missiles = [miss1x, miss1y, miss2x, miss2y]
+            # return missiles, toexplode, myframe, pl1sc, pl2sc
 
         else:
+
+            print missile_nr, miss1x, miss1y, miss2x, miss2y
+
             miss1x += 1
             printxy(miss1y, miss1x, ".")
             # collision
             if (miss1y == pl2y) and (miss1x == pl2x):
-                miss1y = miss1x = 0
-                pl1sc += 1
+                miss1y = 0
+                miss1x = 0
+                score1 += 1
                 toexplode = 2
                 myframe = 1
 
-            missiles = [miss1x, miss1y, miss2x, miss2y]
-            return missiles, toexplode, myframe, pl1sc, pl2sc
+            # missiles = [miss1x, miss1y, miss2x, miss2y]
+            # return missiles, toexplode, myframe, pl1sc, pl2sc
 
     if missile_nr == 2:
         printxy(miss2y, miss2x, " ")
         if miss2x == (pl2x - 1):
-            miss2y = miss2x = 0
+            miss2y = 0
+            miss2x = 0
         else:
             miss2x -= 1
             printxy(miss2y, miss2x, ".")
             # collision
             if (miss2y == pl1y) and (pl1x <= miss2x < (pl1x + 3)):
-                miss2y = miss2x = 0
-                pl2sc += 1
+                miss2y = 0
+                miss2x = 0
+                score2 += 1
                 toexplode = 1
                 myframe = 1
 
     missiles = [miss1x, miss1y, miss2x, miss2y]
-    return missiles, toexplode, myframe, pl1sc, pl2sc
+    return missiles, playertoexplode1, frame1, score1, score2
 
 
 def win(pl1score):
@@ -323,9 +306,16 @@ def main():
     cls()
     updatescores(score[0], score[1])
 
+    # todo: passing around players[] and missiles [] is ugly
+    #players = [player1x, player1y, player2x, player2y]
+    #missiles = [missile1x, missile1y, missile2x, missile2y]
+
     while 1:
-        players = [player1x, player1y, player2x, player2y]
-        missiles = [missile1x, missile1y, missile2x, missile2y]
+
+        #print players, missiles
+        #players = [player1x, player1y, player2x, player2y]
+        #missiles = [missile1x, missile1y, missile2x, missile2y]
+
         # noone dies, someone wins
         if playertoexplode == 0 and \
                 (score[0] == 10 or score[1] == 10):
@@ -339,35 +329,37 @@ def main():
                                           params)
             return  # player1x, player1y
         # rewrite ships
-        ship(1, 1, players)
-        ship(2, 1, players)
+        ship(1, 1, player1x, player1y, player2x, player2y)
+        ship(2, 1, player1x, player1y, player2x, player2y)
         # rewrite missiles
-        params = [playertoexplode, frame, score[0], score[1]]
+
+
         if missile1x != 0:
             [missile1x, missile1y, missile2x, missile2y], playertoexplode, \
-                frame, score[0], score[1] = process_missile(1, missiles,
-                                                            players, params)
+                frame, score[0], score[1] = process_missile(1, missile1x, missile1y, missile2x, missile2y,
+                                                            player1x, player1y, player2x, player2y, playertoexplode, frame, score[0], score[1])
         if missile2x != 0:
             [missile1x, missile1y, missile2x, missile2y], playertoexplode, \
-                frame, score[0], score[1] = process_missile(2, missiles,
-                                                            players, params)
-
+                frame, score[0], score[1] = process_missile(2, missile1x, missile1y, missile2x, missile2y,
+                                                            player1x, player1y, player2x, player2y, playertoexplode, frame, score[0], score[1])
         # process user's control
         key = getch()
         if key == "a" and player1y > bordery[0]:
-            ship(1, 0, players)
+            ship(1, 0, player1x, player1y, player2x, player2y)
             player1y -= 1
         elif key == "z" and player1y < bordery[1]:
-            ship(1, 0, players)
+            ship(1, 0, player1x, player1y, player2x, player2y)
             player1y += 1
         elif key == " " or key == "j":  # todo: accept space
-            missiles = fire_missile(1, missiles, players)
+            [missile1x, missile1y, missile2x, missile2y] = fire_missile(1, missile1x, missile1y, missile2x, missile2y, player1x, player1y, player2x, player2y)
         elif key == "q":
             cls()
             exit()
         # process ai's control
-        missiles, player2y = \
-            artificial_intelligence(players, bordery, missiles)
+        [missile1x, missile1y, missile2x, missile2y, player2y] = \
+            artificial_intelligence(player1x, player1y, player2x, player2y, bordery, missile1x, missile1y, missile2x, missile2y)
+
+
     return  # player1x, player1y
 
 
