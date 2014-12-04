@@ -8,6 +8,7 @@ author: bartoszgo; licence: free for any use
 
 import sys
 import random
+import time
 
 INPUTMETHOD = 0
 try:
@@ -183,22 +184,29 @@ def lose(toexplode, player1x, player1y, player2x, player2y, myframe, params):
     else:
         current_x = pl2x + 1
         current_y = pl2y
-    if myframe != 4:  # magic number - explosion step?
+
+    while myframe < 5:
+        #if myframe != 4:  # magic number - penultimate explosion step?
         printxy(current_y - myframe, current_x, "*")
         printxy(current_y + myframe, current_x, "*")
         printxy(current_y - myframe, current_x - myframe, ".")
         printxy(current_y - myframe, current_x + myframe, ".")
         printxy(current_y + myframe, current_x + myframe, ".")
         printxy(current_y + myframe, current_x - myframe, ".")
-    for j in range(1, 1000):  # todo: need to replace this with time delay
+
+
         printxy(current_y, current_x - myframe, '*' * (myframe * 2 + 1))
-    myframe += 1
-    if myframe >= 5:
-        toexplode = 0
-        cls()
-        updatescores(pl1sc, pl2sc)
-        pl1y = miny + 1
-        pl2y = maxy - 1
+        time.sleep(.1)
+
+        myframe += 1
+
+    #if myframe >= 5:
+
+    toexplode = 0
+    cls()
+    updatescores(pl1sc, pl2sc)
+    pl1y = miny + 1
+    pl2y = maxy - 1
 
     return myframe, toexplode, pl1sc, pl2sc, pl1y, pl2y
 
@@ -278,4 +286,8 @@ def main():
 
 if __name__ == '__main__':
     main()
+    cls()
+    print "Press any key..."
+    key = getch()
+    cls()
     exit()
