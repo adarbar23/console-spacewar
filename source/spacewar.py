@@ -47,6 +47,19 @@ except ImportError:
 # http://code.activestate.com/recipes/134892/
 
 
+# todo: check the below for curses possibly compatible between win and linux
+# http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
+# curses-2.2.win-amd64-py2.7.exe
+
+# todo: next ideas
+# http://peyre.x10.mx/GWBASIC/
+# http://en.wikipedia.org/wiki/Star_Raiders
+# http://en.wikipedia.org/wiki/Empire_(PLATO)
+# http://en.wikipedia.org/wiki/Maze_War
+
+
+
+
 def getch():  # todo: make platform-independent
     if INPUTMETHOD == 1:
         return readchar.readkey()
