@@ -50,6 +50,10 @@ except ImportError:
 # todo: check the below for curses possibly compatible between win and linux
 # http://www.lfd.uci.edu/~gohlke/pythonlibs/#curses
 # curses-2.2.win-amd64-py2.7.exe
+# window.nodelay(1)
+# window.getch([y, x])
+# window.addch(y, x, ch[, attr])
+
 
 # todo: next ideas
 # http://peyre.x10.mx/GWBASIC/
