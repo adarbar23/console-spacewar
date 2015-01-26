@@ -10,6 +10,11 @@ import sys
 import random
 import time
 
+import colorama
+# "Makes ANSI escape character sequences for producing colored
+# terminal text and cursor positioning work under MS Windows."
+# TODO: check!
+
 INPUTMETHOD = 0
 try:
     import readchar
