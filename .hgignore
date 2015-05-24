@@ -1,9 +1,0 @@
-syntax: glob
-*~
-*.pyc
-*.pyo
-*.bak
-*.bak2
-*.orig
-external/*
-.idea/**
