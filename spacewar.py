@@ -10,9 +10,7 @@ import sys
 import random
 import time
 
-import colorama
-colorama.init()
-# TODO: alternatives - urwid, npyscreen, colorconsole, blessings
+import curses
 
 INPUTMETHOD = 0
 try:
