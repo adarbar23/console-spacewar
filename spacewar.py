@@ -1,16 +1,24 @@
 # coding=utf-8
 
 """
-spacewar: a python port from an old gw-basic game (not mine)
-see the original gw-basic source at http://jsbasic.apphb.com/SpaceWar.htm
-author: bartoszgo; licence: free for any use
+spacewar
+-  a python port from an old gw-basic game
+-  see the original gw-basic source at http://jsbasic.apphb.com/SpaceWar.htm
 """
+
+# todo: next ideas
+# http://peyre.x10.mx/GWBASIC/
+# http://en.wikipedia.org/wiki/Star_Raiders
+# http://en.wikipedia.org/wiki/Empire_(PLATO)
+# http://en.wikipedia.org/wiki/Maze_War
 
 import sys
 import random
 import time
 
-import curses
+# import termcolor
+import colorama
+colorama.init()
 
 INPUTMETHOD = 0
 try:
@@ -26,35 +34,6 @@ except ImportError:
         exit()
 
 
-# http://forums.xkcd.com/viewtopic.php?f=11&t=99890
-# the best solution seems to be pygame.
-# if not, try the below. and not sure if it works on windows.
-# ---
-# import thread, time
-#
-# def input_thread(L):
-#     raw_input()
-#     L.append(None)
-#
-# def do_print():
-#     L = []
-#     thread.start_new_thread(input_thread, (L,))
-#     while 1:
-#         time.sleep(.1)
-#         if L: break
-#         print "Hi Mom!"
-#
-# do_print()
-# --- or:
-# http://code.activestate.com/recipes/134892/
-
-
-# todo: next ideas
-# http://peyre.x10.mx/GWBASIC/
-# http://en.wikipedia.org/wiki/Star_Raiders
-# http://en.wikipedia.org/wiki/Empire_(PLATO)
-# http://en.wikipedia.org/wiki/Maze_War
-
 def getch():  # todo: make platform-independent
     if INPUTMETHOD == 1:
         return readchar.readkey()
@@ -69,8 +48,14 @@ def cls():  # todo: make platform-independent
 
 def printxy(ylocation, xlocation, text):  # todo: make platform-independent
     xlocation += 1  # border
-    sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (ylocation, xlocation, text))
-    sys.stdout.flush()
+    # sys.stdout.write("\x1b7\x1b[%d;%df%s\x1b8" % (ylocation, xlocation, text))
+    # ANSI escape sequence, where ESC[y;xH moves curser to row y, col x
+    # http://rosettacode.org/wiki/Terminal_control/Cursor_positioning#Python
+    # https://github.com/tartley/colorama/blob/master/demos/demo06.py
+    # when to use? colorama.AnsiToWin32
+    print("\x1b[%d;%dH%s" % (ylocation, xlocation, text))
+    
+    #sys.stdout.flush()
 
 
 def updatescores(p1score, p2score):
