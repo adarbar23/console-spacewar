@@ -1,5 +1,5 @@
-run-dev.sh
-sh-dev.sh
+vr.sh
+vs.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
