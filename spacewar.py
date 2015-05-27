@@ -22,27 +22,48 @@ colorama.init()
 
 INPUTMETHOD = 0
 try:
-    import readchar
-    INPUTMETHOD = 1
+    import msvcrt
+    INPUTMETHOD = 2
 
 except ImportError:
     try:
-        import msvcrt
-        INPUTMETHOD = 2
+        import readchar
+        INPUTMETHOD = 1
     except ImportError:
         print "Readchar and Msvcrt libraries missing!"
         exit()
 
 
-def getch():  # todo: make platform-independent
+# todo: make getch() non-blocking, maybe like this:
+"""import thread, time
+
+
+def input_thread(L):
+    derp = raw_input()
+    L.append(derp)
+    
+def do_print():
+    L = []
+    thread.start_new_thread(input_thread, (L,))
+    while 1:
+        print 'hi mom'
+        time.sleep(.1)
+        if L:
+            print L[0]
+            del L[0]
+            break
+do_print()
+
+"""
+def getch():
     if INPUTMETHOD == 1:
         return readchar.readkey()
     elif INPUTMETHOD == 2:
         return msvcrt.getch()
     
 
-def cls():  # todo: make platform-independent
-    sys.stdout.write("\x1b7\x1b[2J\x1b8")
+def cls(): 
+    print("\033[2J\033[1;1f")
     return
 
 
@@ -52,7 +73,6 @@ def printxy(ylocation, xlocation, text):  # todo: make platform-independent
     # ANSI escape sequence, where ESC[y;xH moves curser to row y, col x
     # http://rosettacode.org/wiki/Terminal_control/Cursor_positioning#Python
     # https://github.com/tartley/colorama/blob/master/demos/demo06.py
-    # when to use? colorama.AnsiToWin32
     print("\x1b[%d;%dH%s" % (ylocation, xlocation, text))
     
     #sys.stdout.flush()
