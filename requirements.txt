@@ -1,2 +1,2 @@
 readchar==0.7
-colorama
+colorama==0.3.9
